@@ -65,8 +65,8 @@ app.get('/getUser/:email?', function(req, res) {
 
 });
 
-app.post('/setUser', function(req, res) {
-    const { nombre, email } = req.body
+app.get('/setUser/:nombre?/:email?', function(req, res) {
+    // const { nombre, email } = req.body
     pool.getConnection()
         .then(conn => {
             conn.query(`
@@ -75,7 +75,7 @@ app.post('/setUser', function(req, res) {
                 nombre,
                 email) 
                 VALUES
-                (?, ?);`, [nombre, email])
+                (?, ?);`, [req.query.nombre, req.query.email])
                 .then((rows) => {
                     console.log("response=>", rows);
                     return res.status(200).json({ response: 'ok' })
