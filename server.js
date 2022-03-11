@@ -65,18 +65,17 @@ app.get('/getUser/:email?', function(req, res) {
 
 });
 
-app.get('/setUser', function(req, res) {
+app.post('/setUser', function(req, res) {
+    const { nombre, email } = req.body
     pool.getConnection()
         .then(conn => {
             conn.query(`
             INSERT INTO 
             trabajofinaldb.usuarios (
                 nombre,
-                ciudad,
-                telefono,
                 email) 
                 VALUES
-                (?, ?, ?, ?);`, ['name', 'city', 'phone', 'email'])
+                (?, ?);`, [nombre, email])
                 .then((rows) => {
                     console.log("response=>", rows);
                     return res.status(200).json({ response: 'ok' })
