@@ -1,4 +1,5 @@
 var express = require('express');
+var metadata = require('node-ec2-metadata');
 var app = express();
 var port = { dev: 3100, prod: 3000 }
 
@@ -95,5 +96,26 @@ app.get('/setUser/:nombre?/:email?', function(req, res) {
         });
 })
 
+app.get('/getInstance', function(req, res) {
 
-app.listen(port.prod, () => { console.log('listening on port 3000'); });
+    metadata.getMetadataForInstance('instance-id')
+        .then(function(instanceId) {
+            console.log("Instance ID: " + instanceId);
+            return res.status(200).send('<h1> INSTANCE ID===>' + instanceId + '</h1>');
+        })
+        .fail(function(error) {
+            console.log("Error: " + error);
+            return res.status(500).send('<h1> No se pudo localizar el  id de la instancia</h1>');
+        });
+})
+
+app.get('/getInstance2', function(req, res) {
+
+    metadata.isEC2().then(function(onEC2) {
+        return res.status(200).send('<h1> IS EC2===>' + onEC2 + '</h1>');
+    });
+})
+
+
+
+app.listen(port.dev, () => { console.log('listening on port 3000'); });
